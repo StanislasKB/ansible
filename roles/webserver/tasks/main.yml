@@ -1,0 +1,44 @@
+---
+# roles/webserver/tasks/main.yml
+
+- name: Installation de Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+    update_cache: true
+
+- name: Création du répertoire de l'application
+  ansible.builtin.file:
+    path: "{{ laravel_app_dir }}"
+    state: directory
+    owner: "{{ laravel_app_user }}"
+    group: www-data
+    mode: "0755"
+
+- name: Configuration du vhost Nginx pour Laravel
+  ansible.builtin.template:
+    src: nginx-laravel.conf.j2
+    dest: /etc/nginx/sites-available/laravel.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart nginx
+
+- name: Activation du vhost
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/laravel.conf
+    dest: /etc/nginx/sites-enabled/laravel.conf
+    state: link
+  notify: restart nginx
+
+- name: Suppression du vhost par défaut Nginx
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+- name: Démarrage de Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true

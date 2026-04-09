@@ -1,0 +1,67 @@
+---
+# roles/laravel/tasks/main.yml
+
+- name: Autoriser le repo git
+  ansible.builtin.command:
+    cmd: git config --global --add safe.directory {{ laravel_app_dir }}
+
+- name: Clonage du repo Laravel
+  ansible.builtin.git:
+    repo:    "{{ laravel_repo_url }}"
+    dest:    "{{ laravel_app_dir }}"
+    version: "{{ laravel_repo_branch }}"
+    force:   true
+
+- name: Génération du fichier .env
+  ansible.builtin.template:
+    src:   env.j2
+    dest:  "{{ laravel_app_dir }}/.env"
+    owner: www-data
+    group: www-data
+    mode:  "0640"
+
+- name: Installation des dépendances Composer
+  ansible.builtin.command:
+    cmd:   composer install --no-dev --optimize-autoloader --no-interaction
+    chdir: "{{ laravel_app_dir }}"
+
+- name: Permissions sur storage et bootstrap/cache
+  ansible.builtin.file:
+    path:    "{{ item }}"
+    state:   directory
+    owner:   www-data
+    group:   www-data
+    mode:    "0775"
+    recurse: true
+  loop:
+    - "{{ laravel_app_dir }}/storage"
+    - "{{ laravel_app_dir }}/bootstrap/cache"
+
+- name: Permissions sur tout le dossier de l'app
+  ansible.builtin.file:
+    path:    "{{ laravel_app_dir }}"
+    state:   directory
+    owner:   www-data
+    group:   www-data
+    recurse: true
+
+- name: Mise en cache de la configuration
+  ansible.builtin.command:
+    cmd:   php artisan config:cache
+    chdir: "{{ laravel_app_dir }}"
+
+- name: Mise en cache des routes
+  ansible.builtin.command:
+    cmd:   php artisan route:cache
+    chdir: "{{ laravel_app_dir }}"
+
+- name: Exécution des migrations
+  ansible.builtin.command:
+    cmd:   php artisan migrate --force
+    chdir: "{{ laravel_app_dir }}"
+
+- name: Lien symbolique storage
+  ansible.builtin.command:
+    cmd:     php artisan storage:link
+    chdir:   "{{ laravel_app_dir }}"
+    creates: "{{ laravel_app_dir }}/public/storage"

@@ -1,0 +1,14 @@
+---
+# group_vars/dbservers/main.yml
+
+mysql_root_password: "{{ vault_db_root_password }}"
+mysql_bind_address:  "0.0.0.0"
+
+mysql_databases:
+  - name: "{{ db_name }}"
+
+mysql_users:
+  - name: "{{ db_username }}"
+    password: "{{ vault_db_password }}"
+    priv: "{{ db_name }}.*:ALL"
+    host: "%"

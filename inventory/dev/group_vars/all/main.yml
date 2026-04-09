@@ -1,0 +1,15 @@
+---
+# group_vars/all/main.yml
+# Variables partagées par tous les hôtes
+
+# PHP
+php_version: "8.3"
+
+# Laravel - repo
+laravel_repo_url:    "https://{{ github_token }}@github.com/{{ laravel_repo_owner }}/{{ laravel_repo_name }}.git"
+laravel_repo_branch: "master"
+laravel_app_dir:     "/var/www/{{ laravel_repo_name }}"
+laravel_app_user:    "www-data"
+
+# Timezone
+server_timezone: "UTC"

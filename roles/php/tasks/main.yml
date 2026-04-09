@@ -1,0 +1,49 @@
+---
+# roles/php/tasks/main.yml
+
+- name: Installation de software-properties-common (requis pour les PPA)
+  ansible.builtin.apt:
+    name: software-properties-common
+    state: present
+    update_cache: true
+
+- name: Ajout du repo PHP Ondrej (PPA)
+  ansible.builtin.apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+    update_cache: true
+
+- name: Installation de PHP {{ php_version }} et extensions Laravel
+  ansible.builtin.apt:
+    name:
+      - "php{{ php_version }}-fpm"
+      - "php{{ php_version }}-cli"
+      - "php{{ php_version }}-mbstring"
+      - "php{{ php_version }}-xml"
+      - "php{{ php_version }}-bcmath"
+      - "php{{ php_version }}-curl"
+      - "php{{ php_version }}-zip"
+      - "php{{ php_version }}-mysql"
+      - "php{{ php_version }}-tokenizer"
+    state: present
+
+- name: Configuration de PHP-FPM
+  ansible.builtin.template:
+    src: php-fpm-www.conf.j2
+    dest: "/etc/php/{{ php_version }}/fpm/pool.d/www.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart php-fpm
+
+- name: Démarrage de PHP-FPM
+  ansible.builtin.service:
+    name: "php{{ php_version }}-fpm"
+    state: started
+    enabled: true
+
+- name: Installation de Composer
+  ansible.builtin.shell: |
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  args:
+    creates: /usr/local/bin/composer

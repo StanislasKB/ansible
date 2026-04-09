@@ -1,0 +1,28 @@
+---
+# roles/certbot/tasks/main.yml
+
+- name: Installation de Certbot et du plugin Nginx
+  ansible.builtin.apt:
+    name:
+      - certbot
+      - python3-certbot-nginx
+    state: present
+    update_cache: true
+
+- name: Obtention et installation du certificat SSL
+  ansible.builtin.command:
+    cmd: >
+      certbot --nginx
+      -d {{ app_domain }}
+      --non-interactive
+      --agree-tos
+      --email {{ certbot_email }}
+      --redirect
+    creates: /etc/letsencrypt/live/{{ app_domain }}/fullchain.pem
+  notify: reload nginx
+
+- name: Vérification du timer de renouvellement automatique
+  ansible.builtin.service:
+    name: certbot.timer
+    state: started
+    enabled: true

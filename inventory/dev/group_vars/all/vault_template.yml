@@ -1,0 +1,11 @@
+---
+# TEMPLATE UNIQUEMENT - ne pas remplir, ne pas commiter avec des valeurs réelles
+# Tous ces secrets sont injectés via GitHub Secrets + ansible-playbook -e
+
+# vault_github_token:      ""    GitHub Secret : GITHUB_TOKEN
+# vault_laravel_app_key:   ""    GitHub Secret : LARAVEL_APP_KEY
+# vault_db_password:       ""    GitHub Secret : DB_PASSWORD
+# vault_db_root_password:  ""    GitHub Secret : DB_ROOT_PASSWORD
+# vault_certbot_email:     ""    GitHub Secret : CERTBOT_EMAIL
+# vault_mail_username:     ""    GitHub Secret : MAIL_USERNAME
+# vault_mail_password:     ""    GitHub Secret : MAIL_PASSWORD

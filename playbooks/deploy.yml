@@ -1,0 +1,25 @@
+---
+# playbooks/deploy.yml
+# Scénario : instances web et db séparées
+
+- name: Configuration commune
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Configuration base de données
+  hosts: dbservers
+  become: true
+  roles:
+    - database
+
+- name: Configuration serveur web
+  hosts: webservers
+  become: true
+  roles:
+    - php
+    - webserver
+    - laravel
+    - role: certbot
+      when: certbot_enabled | default(false) | bool

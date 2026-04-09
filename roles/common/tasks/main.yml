@@ -1,0 +1,28 @@
+---
+# roles/common/tasks/main.yml
+
+- name: Mise à jour des paquets
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: full
+
+- name: Installation des paquets utilitaires
+  ansible.builtin.apt:
+    name:
+      - curl
+      - git
+      - unzip
+      - vim
+      - htop
+      - chrony
+    state: present
+
+- name: Configuration du timezone
+  community.general.timezone:
+    name: "{{ server_timezone }}"
+
+- name: Démarrage de chrony (synchronisation NTP)
+  ansible.builtin.service:
+    name: chrony
+    state: started
+    enabled: true

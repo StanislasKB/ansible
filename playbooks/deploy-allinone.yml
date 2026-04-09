@@ -1,0 +1,15 @@
+---
+# playbooks/deploy-allinone.yml
+# Scénario : Laravel + MySQL sur le même serveur
+
+- name: Configuration du serveur all-in-one
+  hosts: all
+  become: true
+  roles:
+    - common
+    - database
+    - php
+    - webserver
+    - laravel
+    - role: certbot
+      when: certbot_enabled | default(false) | bool

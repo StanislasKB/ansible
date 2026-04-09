@@ -1,0 +1,9 @@
+---
+# playbooks/redeploy.yml
+# Redéploie uniquement le code Laravel sans retoucher l'infra
+
+- name: Redéploiement de l'application Laravel
+  hosts: webservers
+  become: true
+  roles:
+    - laravel

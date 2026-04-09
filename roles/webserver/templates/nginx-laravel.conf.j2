@@ -1,0 +1,28 @@
+# roles/webserver/templates/nginx-laravel.conf.j2
+
+server {
+    listen 80;
+    server_name {{ app_domain }};
+    root {{ laravel_app_dir }}/public;
+    index index.php;
+
+    client_max_body_size {{ nginx_client_max_body_size }};
+
+    access_log /var/log/nginx/laravel_access.log;
+    error_log  /var/log/nginx/laravel_error.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+    fastcgi_pass  unix:/run/php/php{{ php_version }}-fpm.sock;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+    include       fastcgi_params;
+}
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}

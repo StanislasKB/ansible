@@ -1,0 +1,62 @@
+---
+# roles/database/tasks/main.yml
+
+- name: Installation de MySQL Server
+  ansible.builtin.apt:
+    name:
+      - mysql-server
+      - mysql-client
+      - python3-pymysql
+    state: present
+    update_cache: true
+
+- name: Démarrage de MySQL
+  ansible.builtin.service:
+    name: mysql
+    state: started
+    enabled: true
+
+- name: Sécurisation du compte root MySQL
+  community.mysql.mysql_user:
+    name: root
+    host_all: true
+    password: "{{ mysql_root_password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    state: present
+
+- name: Création du fichier .my.cnf pour les tâches suivantes
+  ansible.builtin.template:
+    src: my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Suppression des bases de test
+  community.mysql.mysql_db:
+    name: test
+    state: absent
+
+- name: Création de la base de données
+  community.mysql.mysql_db:
+    name: "{{ item.name }}"
+    state: present
+  loop: "{{ mysql_databases }}"
+
+- name: Création des utilisateurs MySQL
+  community.mysql.mysql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    priv: "{{ item.priv }}"
+    host: "{{ item.host }}"
+    state: present
+  loop: "{{ mysql_users }}"
+  no_log: true
+
+
+- name: Configuration du bind-address MySQL
+  ansible.builtin.lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: '^bind-address'
+    line: 'bind-address = {{ mysql_bind_address }}'
+  notify: restart mysql

@@ -1,0 +1,47 @@
+---
+# group_vars/webservers/main.yml
+
+# Nginx
+nginx_worker_processes:     "auto"
+nginx_client_max_body_size: "100M"
+
+# Domaine
+app_domain: "dev.mondomaine.com"
+
+# PHP-FPM
+php_fpm_pm:                "dynamic"
+php_fpm_max_children:      10
+php_fpm_start_servers:     3
+php_fpm_min_spare_servers: 2
+php_fpm_max_spare_servers: 5
+
+# Laravel env
+laravel_env:              "local"
+laravel_debug:            "true"
+laravel_log_level:        "debug"
+laravel_app_url:          "http://{{ app_domain }}"
+laravel_locale:           "en"
+laravel_fallback_locale:  "en"
+laravel_faker_locale:     "en_US"
+laravel_session_driver:   "database"
+laravel_queue_connection: "database"
+laravel_cache_store:      "database"
+
+# Mail
+mail_mailer:       "log"
+mail_host:         "127.0.0.1"
+mail_port:         2525
+mail_from_address: "hello@example.com"
+
+# DB
+db_port:     3306
+db_name:     "{{ laravel_repo_name }}"
+db_username: "{{ laravel_repo_name }}"
+
+# Secrets — injectés depuis GitHub Secrets via -e
+github_token:    "{{ vault_github_token }}"
+laravel_app_key: "{{ vault_laravel_app_key }}"
+certbot_email:   "{{ vault_certbot_email }}"
+mail_username:   "{{ vault_mail_username }}"
+mail_password:   "{{ vault_mail_password }}"
+db_password:     "{{ vault_db_password }}"

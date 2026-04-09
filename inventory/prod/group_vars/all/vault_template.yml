@@ -1,0 +1,13 @@
+---
+# TEMPLATE UNIQUEMENT — ne pas remplir, ne pas commiter avec des valeurs réelles
+# En prod, deux options :
+#   Option A (CI/CD) : injecter via GitHub Secrets + -e
+#   Option B (manuel) : ansible-vault encrypt vault.yml + --vault-password-file
+
+# vault_github_token:      ""
+# vault_laravel_app_key:   ""
+# vault_db_password:       ""
+# vault_db_root_password:  ""
+# vault_certbot_email:     ""
+# vault_mail_username:     ""
+# vault_mail_password:     ""
