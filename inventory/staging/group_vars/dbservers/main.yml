@@ -5,10 +5,10 @@ mysql_root_password: "{{ vault_db_root_password }}"
 mysql_bind_address:  "0.0.0.0"
 
 mysql_databases:
-  - name: "{{ laravel_repo_name }}"
+  - name: "{{ db_name }}"
 
 mysql_users:
-  - name: "{{ laravel_repo_name }}"
+  - name: "{{ db_username }}"
     password: "{{ vault_db_password }}"
-    priv: "{{ laravel_repo_name }}.*:ALL"
+    priv: "{{ db_name }}.*:ALL"
     host: "%"
