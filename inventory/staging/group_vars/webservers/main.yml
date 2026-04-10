@@ -38,8 +38,8 @@ mail_from_address: "hello@example.com"
 #   - allinone  : 127.0.0.1
 #   - séparé    : IP de l'instance db (terraform output)
 db_port:     3306
-db_name:     "{{ laravel_repo_name }}"
-db_username: "{{ laravel_repo_name }}"
+db_name:     "{{ db_name }}"
+db_username: "{{ db_username }}"
 
 # Secrets — tous injectés depuis GitHub Secrets via -e
 github_token:    "{{ vault_github_token }}"
