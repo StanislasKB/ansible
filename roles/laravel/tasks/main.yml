@@ -20,6 +20,12 @@
     group: www-data
     mode:  "0640"
 
+- name: Génération de la clé d'application Laravel
+  ansible.builtin.command:
+    cmd: php artisan key:generate --force
+    chdir: "{{ laravel_app_dir }}"
+  when: laravel_app_key == "" or laravel_app_key is not defined
+
 - name: Installation des dépendances Composer
   ansible.builtin.command:
     cmd:   composer install --no-dev --optimize-autoloader --no-interaction
