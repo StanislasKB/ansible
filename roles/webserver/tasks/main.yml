@@ -31,9 +31,15 @@
     state: link
   notify: restart nginx
 
-- name: Suppression du vhost par défaut Nginx
+- name: Suppression du vhost par défaut Nginx (sites-enabled)
   ansible.builtin.file:
     path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+- name: Suppression du vhost par défaut Nginx (sites-available)
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available/default
     state: absent
   notify: restart nginx
 

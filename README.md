@@ -67,6 +67,8 @@ The deployment mode is controlled by the GitHub Variable `DEPLOY_MODE`: `allinon
 | Variable | Values | Description |
 |---|---|---|
 | `DEPLOY_MODE` | `allinone` / `separated` | Deployment mode |
+| `DB_NAME` | `...` | Database name |
+| `DB_USERNAME` | `...` | Database username |
 | `CERTBOT_ENABLED` | `true` / `false` | Enable SSL via Let's Encrypt |
 
 ## Manual Deployment
