@@ -72,3 +72,8 @@
     cmd:     php artisan storage:link
     chdir:   "{{ laravel_app_dir }}"
     creates: "{{ laravel_app_dir }}/public/storage"
+
+- name: Redémarrage de Nginx
+  ansible.builtin.service:
+    name:  nginx
+    state: restarted
